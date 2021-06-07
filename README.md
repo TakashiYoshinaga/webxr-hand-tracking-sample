@@ -10,7 +10,7 @@ The simple hand tracking sample of WebXR developed with A-Frame.<br>
 # Experience
 https://webxr-hand-drawing.glitch.me
 <br>
-![QR](https://github.com/TakashiYoshinaga/webxr-hand-tracking-sample/blob/main/qr.png?raw=true)
+![QR](https://github.com/TakashiYoshinaga/webxr-hand-tracking-sample/blob/main/images/qr.png?raw=true)
 
 # Handout for workshop.
 https://www.slideshare.net/ssuserc0d7fb/aframewebxr-hololens2oculus-quest
