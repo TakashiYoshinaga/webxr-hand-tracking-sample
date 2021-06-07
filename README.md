@@ -6,3 +6,6 @@ This sample works on folowoing devices.<br>
 ・HoloLens2<br>
 ・Oculus Quest2<br>
 ・Oculus Quest<br>
+<br>
+# Handout for workshop.
+https://www.slideshare.net/ssuserc0d7fb/aframewebxr-hololens2oculus-quest
