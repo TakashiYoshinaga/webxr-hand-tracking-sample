@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR_Fukuoka</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script>
+      var scene; //Variable of 3D Space (a-scene)
+      var rightHand; 
+      var leftHand; 
+      var prev;//The last position where a box was placed。
+      //Color array to assign boxes.
+      var colors = ['#0062C6', '#00AB00', '#FFCF00', '#7F00FF', '#FFFFFF', '#FF2000',  '#F52394', '#593110'];
+      //index of color array
+      var index=0;    
+      //Object of finger tip.
+      var tip;
+      window.onload = function() {
+        //Getting information of 3D space.
+        scene = document.querySelector('a-scene');
+        //Getting the object of finger tip.
+        tip = document.getElementById("tip");
+        initRightHand(); //Initializaiton of right hand.
+        initLeftHand();  //Initialization of left hand.
+      };
+      //Initializaiton of right hand.
+      function initRightHand(){
+        //Getting the element of right hand.
+        rightHand = document.getElementById("rightHand");
+        //Real-time tracking of finger tip
+        tipTracking(rightHand.components['hand-tracking-controls']);
+        //The event of pinch started.
+        rightHand.addEventListener('pinchstarted', function (e) {
+          //Position of pinch position
+          var position = e.detail.position;
+          //Generating a box.
+          addBox(position);
+        });
+        //The event of pinch ended.
+        rightHand.addEventListener('pinchended', function (e) {
+          //Incliment the index of color array.
+          index++;
+          index%=colors.length;
+          //Set the color of the finger tip object 
+          tip.setAttribute('color', colors[index]);
+        });
+        //The event of moving while pinching.
+        rightHand.addEventListener('pinchmoved', function (e) {
+          //Position of pinch position
+          var position = e.detail.position;
+          //Distance between pinch position and last box's position
+          var length= prev.distanceTo(position);     
+          //Adding a box if distance is larger than 0.02m
+          if(length>=0.02){
+            //Geterating a box
+            addBox(position);
+          }
+        });
+      };
+      //Initialization of left hand
+      function initLeftHand(){
+        //Getting left hand
+        leftHand = document.getElementById("leftHand");
+        //Delete all boxes when pinch started.
+        leftHand.addEventListener('pinchstarted', function (e) { 
+          var els = document.querySelectorAll('.box');
+          for (var i = 0; i < els.length; i++) {
+            els[i].parentNode.removeChild(els[i]);
+          }
+        }); 
+      };
+      function addBox(position){
+        //Creating a-box element
+        var box = document.createElement('a-box');
+        //Setting position/scale/color of a box
+        box.setAttribute('position', position);
+        box.setAttribute('scale', '0.02 0.02 0.02');
+        box.setAttribute('color', colors[index]);
+        //Setting class name.
+        box.setAttribute('class', 'box');
+        //Add a box into the 3D space.
+        scene.appendChild(box);
+        //Set the position latest box's position.
+        prev=box.object3D.position;
+      }
+      function tipTracking(ctrl){
+        var position = ctrl.indexTipPosition;
+        tip.setAttribute('position', position);
+        setTimeout(function(){tipTracking(ctrl);}, 30);
+      };
+    </script>
+  </head>
+  <body>
+    <a-scene background="color: #ECECEC">
+      <a-box position="0 1.5 -2" scale="0.5 0.5 0.5" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
+      <a-entity id="leftHand" hand-tracking-controls="hand: left; modelStyle: dots;"></a-entity>
+      <a-entity id="rightHand" hand-tracking-controls="hand: right; modelStyle: dots;"></a-entity>
+      <a-sphere id="tip" position="0 0 0" radius="0.015" color="#0062C6"></a-sphere>
+    </a-scene>
+  </body>
+</html>
